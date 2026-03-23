@@ -9,7 +9,7 @@ const app = express();
 app.use(cors());
 
 // Serve the frontend automatically!
-app.use(express.static(path.join(__dirname, '../frontend/dist')));
+app.use(express.static(path.join(__dirname, './dist')));
 
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server, path: '/ws' });

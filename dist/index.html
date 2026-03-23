@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remote Management System</title>
+  <script type="module" crossorigin src="/assets/index-PwqeM48A.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-D1vJSu4T.css">
+</head>
+<body class="dark-theme">
+    <div id="app">
+        <!-- Login Screen -->
+        <div id="login-screen" class="screen active">
+            <div class="glass-card login-card">
+                <h2>Access Control</h2>
+                <div class="input-group">
+                    <input type="password" id="secret-key" placeholder="Enter Secret Key">
+                </div>
+                <button id="login-btn" class="glow-btn">Authenticate</button>
+                <p id="login-error" class="error-text"></p>
+            </div>
+        </div>
+
+        <!-- Dashboard Screen -->
+        <div id="dashboard-screen" class="screen">
+            <header>
+                <h1>Device Dashboard</h1>
+                <div class="user-info">
+                    <span id="status-dot" class="dot"></span>
+                    <span id="connection-status">Disconnected</span>
+                </div>
+            </header>
+            <main>
+                <div class="device-list-container glass-card">
+                    <h3>Connected Devices</h3>
+                    <div id="device-list" class="device-list">
+                        <!-- Devices will be injected here -->
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <div id="management-screen" class="screen">
+            <header class="mgmt-header">
+                <button id="back-to-dash" class="text-btn">← Back</button>
+                <div class="target-title">
+                    Managing: <span id="current-device-name">Device Name</span>
+                    <span id="device-uptime-badge" class="badge">Uptime: 0h</span>
+                </div>
+                <div id="hb-indicator" class="heartbeat-active">ONLINE</div>
+            </header>
+            <div class="split-container">
+                <div class="split-left terminal-container">
+                    <div class="panel-header">PowerShell</div>
+                    <div id="term1" class="terminal-view"></div>
+                </div>
+                <div class="split-right network-container">
+                    <div class="panel-header">Management Console</div>
+                    <div class="control-panel">
+                        <div class="control-section logs-section">
+                            <h4>Connection Logs</h4>
+                            <div id="log-screen" class="mini-logs">
+                                <div class="log-entry">Waiting for connection...</div>
+                            </div>
+                        </div>
+                        <div class="control-section logs-section">
+                            <h4>Network Logs</h4>
+                            <div id="traffic-monitor" class="traffic-monitor">
+                                <!-- Traffic logs will be injected here -->
+                            </div>
+                        </div>
+                        <div class="control-section">
+                            <h4>Actions</h4>
+                            <div class="btn-row">
+                                <button id="shutdown-btn" class="danger-btn">Shutdown</button>
+                                <button id="restart-btn" class="warning-btn">Restart</button>
+                                <button id="send-manifest-btn" class="manifest-btn">Send Manifest</button>
+                            </div>
+                                
+                        </div>
+                        <div class="control-section">
+                            <h4>Remote URL</h4>
+                            <div class="input-row">
+                                <input type="text" id="url-input" placeholder="Quick Link (https://...)">
+                                <button id="send-url-btn">Launch</button>
+                            </div>
+                        </div>
+                        <div class="control-section">
+                            <h4>Popup</h4>
+                            <div class="input-row">
+                                <input type="text" id="popup-text" placeholder="Popup Text">
+                                <button id="send-popup-btn">Send</button>
+                            </div>
+                        </div>
+                        <div class="control-section">
+                            <h4>Device Preferences</h4>
+                            <button id="self-destruct-btn" class="critical-btn">Self Destruct</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
