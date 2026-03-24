@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Remote Management System</title>
-  <script type="module" crossorigin src="/assets/index-CnXzOU5A.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/index-D1vJSu4T.css">
+  <script type="module" crossorigin src="/assets/index-2ycYnSxk.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-C9F3QO9P.css">
 </head>
 <body class="dark-theme">
     <div id="app">
@@ -32,7 +32,10 @@
             </header>
             <main>
                 <div class="device-list-container glass-card">
-                    <h3>Connected Devices</h3>
+                    <div class="device-list-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h3 style="margin: 0;">Connected Devices</h3>
+                        <button id="refresh-agents-btn" class="glow-btn" style="width: auto; padding: 8px 16px;">Refresh List</button>
+                    </div>
                     <div id="device-list" class="device-list">
                         <!-- Devices will be injected here -->
                     </div>
