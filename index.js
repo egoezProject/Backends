@@ -53,7 +53,7 @@ wss.on('connection', (ws, req) => {
     }
 });
 
-const PORT = process.env.PORT || 5902;
+const PORT = process.env.PORT || 443;
 server.listen(PORT, "0.0.0.0", () => {
     console.log(`⚡ Merkez Sunucu ve Arayüz ${PORT} portunda başarıyla başlatıldı!`);
     console.log(`🌐 Arayüze ulaşmak için tarayıcıda açın: http://localhost:${PORT}`);
