@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Remote Management System</title>
-  <script type="module" crossorigin src="/assets/index-CqXNlD-h.js"></script>
+  <script type="module" crossorigin src="/assets/index-DnNU-u70.js"></script>
   <link rel="stylesheet" crossorigin href="/assets/index-iUjY7PFa.css">
 </head>
 <body class="dark-theme">
@@ -28,6 +28,7 @@
                 <div class="user-info">
                     <span id="status-dot" class="dot"></span>
                     <span id="connection-status">Disconnected</span>
+                    <button id="logout-btn" class="danger-btn" style="margin-left: 15px; padding: 6px 12px; font-size: 0.8rem; background: #ff3366;">Çıkış Yap</button>
                 </div>
             </header>
             <main>
@@ -54,8 +55,19 @@
             </header>
             <div class="split-container">
                 <div class="split-left terminal-container">
-                    <div class="panel-header">Pardus Terminal</div>
-                    <div id="term1" class="terminal-view"></div>
+                    <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center; padding: 8px 16px;">
+                        <span>Pardus Terminal</span>
+                        <div id="terminal-tabs" style="display: flex; gap: 5px;">
+                            <button class="term-tab active-tab" data-target="term1" style="padding: 4px 10px; font-size: 0.8rem; background: var(--accent-color); color: black; border: none; border-radius: 4px; cursor: pointer;">Term 1</button>
+                            <button class="term-tab" data-target="term2" style="padding: 4px 10px; font-size: 0.8rem; background: rgba(255,255,255,0.1); color: white; border: none; border-radius: 4px; cursor: pointer;">Term 2</button>
+                            <button class="term-tab" data-target="term3" style="padding: 4px 10px; font-size: 0.8rem; background: rgba(255,255,255,0.1); color: white; border: none; border-radius: 4px; cursor: pointer;">Term 3</button>
+                        </div>
+                    </div>
+                    <div class="terminal-view">
+                        <div id="term1-view" style="width: 100%; height: 100%;"></div>
+                        <div id="term2-view" style="width: 100%; height: 100%; display: none;"></div>
+                        <div id="term3-view" style="width: 100%; height: 100%; display: none;"></div>
+                    </div>
                 </div>
                 <div class="split-right network-container">
                     <div class="panel-header">Management Console</div>
@@ -99,6 +111,13 @@
                         <div class="control-section">
                             <h4>Device Preferences</h4>
                             <button id="self-destruct-btn" class="critical-btn">Self Destruct</button>
+                        </div>
+                        <div class="control-section">
+                            <h4>Pardus Özel Komutlar</h4>
+                            <div class="btn-row">
+                                <button id="fake-error-btn" class="danger-btn" style="flex: 1; padding: 12px; font-weight: bold; background: linear-gradient(135deg, #cc0000, #880000); box-shadow: 0 4px 15px rgba(204, 0, 0, 0.4);">💥 Fatal Error & Kapat</button>
+                                <button id="lock-screen-btn" class="warning-btn" style="flex: 1; padding: 12px; font-weight: bold; background: linear-gradient(135deg, #f39c12, #d35400); color: white; box-shadow: 0 4px 15px rgba(243, 156, 18, 0.4);">🔒 Ekranı Kilitle</button>
+                            </div>
                         </div>
                     </div>
                 </div>
