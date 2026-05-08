@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Remote Management System</title>
-  <script type="module" crossorigin src="/assets/index-Axfdgtv_.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/index-iUjY7PFa.css">
+  <script type="module" crossorigin src="/assets/index-DsGqipUu.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-CdIZvmhV.css">
 </head>
+
 <body class="dark-theme">
     <div id="app">
         <!-- Login Screen -->
@@ -14,7 +16,8 @@
             <div class="glass-card login-card">
                 <h2>Access Control</h2>
                 <div class="input-group">
-                    <input type="password" id="secret-key" placeholder="Enter Secret Key">
+                    <input type="text" id="username" placeholder="Username" style="margin-bottom: 10px;">
+                    <input type="password" id="password" placeholder="Password">
                 </div>
                 <button id="login-btn" class="glow-btn">Authenticate</button>
                 <p id="login-error" class="error-text"></p>
@@ -24,21 +27,60 @@
         <!-- Dashboard Screen -->
         <div id="dashboard-screen" class="screen">
             <header>
-                <h1>Device Dashboard</h1>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <h1 style="margin:0;">Device Dashboard</h1>
+                    <span id="user-role-badge" class="badge">Role</span>
+                </div>
                 <div class="user-info">
                     <span id="status-dot" class="dot"></span>
                     <span id="connection-status">Disconnected</span>
-                    <button id="logout-btn" class="danger-btn" style="margin-left: 15px; padding: 6px 12px; font-size: 0.8rem; background: #ff3366;">Çıkış Yap</button>
+                    <button id="logout-btn" class="danger-btn"
+                        style="margin-left: 15px; padding: 6px 12px; font-size: 0.8rem; background: #ff3366;">Çıkış
+                        Yap</button>
                 </div>
             </header>
-            <main>
-                <div class="device-list-container glass-card">
-                    <div class="device-list-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <main style="display: flex; gap: 20px; padding: 20px; flex-wrap: wrap;">
+                <div class="device-list-container glass-card" style="flex: 2; margin: 0; min-width: 300px;">
+                    <div class="device-list-header"
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                         <h3 style="margin: 0;">Connected Devices</h3>
-                        <button id="refresh-agents-btn" class="glow-btn" style="width: auto; padding: 8px 16px;">Refresh List</button>
+                        <div style="display: flex; gap: 10px;">
+                            <button id="btn-claim-modal" class="glow-btn" style="width: auto; padding: 8px 16px; display: none;">Add to Inventory</button>
+                            <button id="refresh-agents-btn" class="glow-btn" style="width: auto; padding: 8px 16px;">Refresh List</button>
+                        </div>
                     </div>
                     <div id="device-list" class="device-list">
                         <!-- Devices will be injected here -->
+                    </div>
+                </div>
+
+                <!-- Admin Panel (Only visible to Admin) -->
+                <div id="admin-panel" class="glass-card" style="flex: 1; margin: 0; display: none; flex-direction: column; gap: 20px; min-width: 300px; padding: 20px;">
+                    <div>
+                        <h3 style="margin-top: 0; color: var(--success-color);">User Management</h3>
+                        <div style="display: flex; gap: 5px; margin-bottom: 10px;">
+                            <input type="text" id="new-user-name" placeholder="New Username" style="flex:1; padding: 5px;">
+                            <input type="password" id="new-user-pass" placeholder="Password" style="flex:1; padding: 5px;">
+                            <button id="create-user-btn" class="glow-btn" style="padding: 5px 10px; width: auto;">Create</button>
+                        </div>
+                        <div id="admin-users-list" style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 10px; max-height: 150px; overflow-y: auto;">
+                            <!-- Users injected here -->
+                        </div>
+                    </div>
+                    <div>
+                        <h3 style="margin-top: 0; color: var(--warning-color);">Pending Approvals</h3>
+                        <div id="approvals-list" style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 10px; min-height: 100px;">
+                            <!-- Approvals injected here -->
+                        </div>
+                    </div>
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <h3 style="margin: 0; color: var(--accent-color);">All Clients (DB)</h3>
+                            <button id="refresh-admin-clients-btn" class="glow-btn" style="padding: 5px 10px; font-size: 0.8rem; width: auto;">Refresh</button>
+                        </div>
+                        <div id="admin-clients-list" style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 10px; margin-top: 10px; min-height: 150px; max-height: 400px; overflow-y: auto;">
+                            <!-- All DB clients injected here -->
+                        </div>
                     </div>
                 </div>
             </main>
@@ -55,12 +97,19 @@
             </header>
             <div class="split-container">
                 <div class="split-left terminal-container">
-                    <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center; padding: 8px 16px;">
+                    <div class="panel-header"
+                        style="display: flex; justify-content: space-between; align-items: center; padding: 8px 16px;">
                         <span>Pardus Terminal</span>
                         <div id="terminal-tabs" style="display: flex; gap: 5px;">
-                            <button class="term-tab active-tab" data-target="term1" style="padding: 4px 10px; font-size: 0.8rem; background: var(--accent-color); color: black; border: none; border-radius: 4px; cursor: pointer;">Term 1</button>
-                            <button class="term-tab" data-target="term2" style="padding: 4px 10px; font-size: 0.8rem; background: rgba(255,255,255,0.1); color: white; border: none; border-radius: 4px; cursor: pointer;">Term 2</button>
-                            <button class="term-tab" data-target="term3" style="padding: 4px 10px; font-size: 0.8rem; background: rgba(255,255,255,0.1); color: white; border: none; border-radius: 4px; cursor: pointer;">Term 3</button>
+                            <button class="term-tab active-tab" data-target="term1"
+                                style="padding: 4px 10px; font-size: 0.8rem; background: var(--accent-color); color: black; border: none; border-radius: 4px; cursor: pointer;">Term
+                                1</button>
+                            <button class="term-tab" data-target="term2"
+                                style="padding: 4px 10px; font-size: 0.8rem; background: rgba(255,255,255,0.1); color: white; border: none; border-radius: 4px; cursor: pointer;">Term
+                                2</button>
+                            <button class="term-tab" data-target="term3"
+                                style="padding: 4px 10px; font-size: 0.8rem; background: rgba(255,255,255,0.1); color: white; border: none; border-radius: 4px; cursor: pointer;">Term
+                                3</button>
                         </div>
                     </div>
                     <div class="terminal-view">
@@ -92,7 +141,7 @@
                                 <button id="send-manifest-btn" class="manifest-btn">Send Manifest</button>
                                 <button id="send-autostartup-btn" class="autostartup-btn">Send AutoStartup</button>
                             </div>
-                                
+
                         </div>
                         <div class="control-section">
                             <h4>Remote URL</h4>
@@ -108,6 +157,73 @@
                                 <button id="send-popup-btn">Send</button>
                             </div>
                         </div>
+                        <div id="virtual-keyboard" class="keyboard-container">
+    <div class="keyboard-row">
+        <button class="v-key" data-key="Escape">Esc</button>
+        <button class="v-key" data-key="1">1</button>
+        <button class="v-key" data-key="2">2</button>
+        <button class="v-key" data-key="3">3</button>
+        <button class="v-key" data-key="4">4</button>
+        <button class="v-key" data-key="5">5</button>
+        <button class="v-key" data-key="6">6</button>
+        <button class="v-key" data-key="7">7</button>
+        <button class="v-key" data-key="8">8</button>
+        <button class="v-key" data-key="9">9</button>
+        <button class="v-key" data-key="0">0</button>
+        <button class="v-key" data-key="BackSpace">Sil</button>
+    </div>
+    <div class="keyboard-row">
+        <button class="v-key" data-key="Tab">Tab</button>
+        <button class="v-key" data-key="q">q</button>
+        <button class="v-key" data-key="w">w</button>
+        <button class="v-key" data-key="e">e</button>
+        <button class="v-key" data-key="r">r</button>
+        <button class="v-key" data-key="t">t</button>
+        <button class="v-key" data-key="y">y</button>
+        <button class="v-key" data-key="u">u</button>
+        <button class="v-key" data-key="i">i</button>
+        <button class="v-key" data-key="o">o</button>
+        <button class="v-key" data-key="p">p</button>
+        <button class="v-key" data-key="Return">Enter</button>
+    </div>
+    <div class="keyboard-row">
+        <button class="v-key" data-key="a">a</button>
+        <button class="v-key" data-key="s">s</button>
+        <button class="v-key" data-key="d">d</button>
+        <button class="v-key" data-key="f">f</button>
+        <button class="v-key" data-key="g">g</button>
+        <button class="v-key" data-key="h">h</button>
+        <button class="v-key" data-key="j">j</button>
+        <button class="v-key" data-key="k">k</button>
+        <button class="v-key" data-key="l">l</button>
+    </div>
+    <div class="keyboard-row">
+        <button class="v-key" data-key="z">z</button>
+        <button class="v-key" data-key="x">x</button>
+        <button class="v-key" data-key="c">c</button>
+        <button class="v-key" data-key="v">v</button>
+        <button class="v-key" data-key="b">b</button>
+        <button class="v-key" data-key="n">n</button>
+        <button class="v-key" data-key="m">m</button>
+    </div>
+    <div class="keyboard-row">
+        <button class="v-key" data-key="space" style="flex-grow: 1;">Boşluk (Space)</button>
+        <button class="v-key" data-key="Up">↑</button>
+        <button class="v-key" data-key="Down">↓</button>
+        <button class="v-key" data-key="Left">←</button>
+        <button class="v-key" data-key="Right">→</button>
+    </div>
+</div>
+                        <div class="control-section">
+                            <h4>Mouse Kontrol (Trackpad)</h4>
+                            <div id="trackpad" style="width: 100%; height: 200px; background: rgba(255,255,255,0.05); border: 2px dashed rgba(255,255,255,0.2); border-radius: 8px; touch-action: none; position: relative; cursor: crosshair;">
+                                <span style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: rgba(255,255,255,0.3); pointer-events: none; text-align: center; width: 100%;">Sürükle & Dokun<br><small>(Mobil Uyumlu)</small></span>
+                            </div>
+                            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                                <button id="mouse-left-btn" class="glow-btn" style="flex: 1; padding: 10px; font-weight: bold;">Sol Tık</button>
+                                <button id="mouse-right-btn" class="glow-btn" style="flex: 1; padding: 10px; font-weight: bold; background: rgba(255,255,255,0.1); color: white;">Sağ Tık</button>
+                            </div>
+                        </div>
                         <div class="control-section">
                             <h4>Device Preferences</h4>
                             <button id="self-destruct-btn" class="critical-btn">Self Destruct</button>
@@ -115,23 +231,58 @@
                         <div class="control-section">
                             <h4>Pardus Özel Komutlar</h4>
                             <div class="btn-row">
-                                <button id="fake-error-btn" class="danger-btn" style="flex: 1; padding: 12px; font-weight: bold; background: linear-gradient(135deg, #cc0000, #880000); box-shadow: 0 4px 15px rgba(204, 0, 0, 0.4);">💥 Fatal Error & Kapat</button>
-                                <button id="lock-screen-btn" class="warning-btn" style="flex: 1; padding: 12px; font-weight: bold; background: linear-gradient(135deg, #f39c12, #d35400); color: white; box-shadow: 0 4px 15px rgba(243, 156, 18, 0.4);">🔒 Ekranı Kilitle</button>
+                                <button id="fake-error-btn" class="danger-btn"
+                                    style="flex: 1; padding: 12px; font-weight: bold; background: linear-gradient(135deg, #cc0000, #880000); box-shadow: 0 4px 15px rgba(204, 0, 0, 0.4);">💥
+                                    Fatal Error & Kapat</button>
+                                <button id="lock-screen-btn" class="warning-btn"
+                                    style="flex: 1; padding: 12px; font-weight: bold; background: linear-gradient(135deg, #f39c12, #d35400); color: white; box-shadow: 0 4px 15px rgba(243, 156, 18, 0.4);">🔒
+                                    Ekranı Kilitle</button>
                             </div>
                             <div class="btn-row" style="margin-top: 10px;">
-                                <button id="screenshot-btn" class="glow-btn" style="flex: 1; padding: 12px; font-weight: bold; background: linear-gradient(135deg, #2ecc71, #27ae60); color: white; box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4); border: none; border-radius: 8px; cursor: pointer;">📸 Ekran Görüntüsü Al</button>
+                                <button id="screenshot-btn" class="glow-btn"
+                                    style="flex: 1; padding: 12px; font-weight: bold; background: linear-gradient(135deg, #2ecc71, #27ae60); color: white; box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4); border: none; border-radius: 8px; cursor: pointer;">📸
+                                    Ekran Görüntüsü Al</button>
                             </div>
                         </div>
                         <div class="control-section">
                             <h4>🖼️ Alınan Ekran Görüntüleri</h4>
-                            <div id="screenshots-list" style="display: flex; flex-direction: column; gap: 10px; max-height: 400px; overflow-y: auto; background: #1e1e2e; padding: 10px; border-radius: 6px; min-height: 100px; align-items: center; justify-content: center;">
-                                <div class="placeholder-text" style="text-align:center; color: var(--text-secondary); font-size: 0.9rem;">Henüz ekran görüntüsü alınmadı.</div>
+                            <div id="screenshots-list"
+                                style="display: flex; flex-direction: column; gap: 10px; max-height: 400px; overflow-y: auto; background: #1e1e2e; padding: 10px; border-radius: 6px; min-height: 100px; align-items: center; justify-content: center;">
+                                <div class="placeholder-text"
+                                    style="text-align:center; color: var(--text-secondary); font-size: 0.9rem;">Henüz
+                                    ekran görüntüsü alınmadı.</div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        </div>
     </div>
+
+    <!-- Claim Modal Overlay -->
+    <div id="claim-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center;">
+        <div class="glass-card" style="padding: 30px; width: 400px; text-align: center;">
+            <h3 style="margin-top: 0;">Add Client to Inventory</h3>
+            <p style="color: var(--text-secondary); font-size: 0.9rem;">Enter the JWT code provided by the administrator.</p>
+            <input type="text" id="jwt-input" placeholder="JWT-XXXXXX" style="width: 100%; text-align: center; font-size: 1.2rem; letter-spacing: 2px; margin: 15px 0;">
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <button id="cancel-claim-btn" class="danger-btn" style="width: auto;">Cancel</button>
+                <button id="submit-claim-btn" class="glow-btn" style="width: auto;">Submit Request</button>
+            </div>
+            <p id="claim-status" style="margin-top: 15px; font-size: 0.8rem;"></p>
+        </div>
+    </div>
+
+    <!-- Generate JWT Modal for Admin -->
+    <div id="jwt-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center;">
+        <div class="glass-card" style="padding: 30px; width: 400px; text-align: center;">
+            <h3 style="margin-top: 0; color: var(--success-color);">JWT Generated</h3>
+            <p style="color: var(--text-secondary); font-size: 0.9rem;">Copy this code and give it to the user.</p>
+            <input type="text" id="generated-jwt" readonly style="width: 100%; text-align: center; font-size: 1.2rem; letter-spacing: 2px; margin: 15px 0; background: rgba(255,255,255,0.1);">
+            <button id="close-jwt-modal-btn" class="glow-btn">Close</button>
+        </div>
+    </div>
+
 </body>
 </html>
