@@ -270,7 +270,10 @@ wss.on('connection', (ws, req) => {
                 const ownerId = meta.client.ownerId; // Who owns this client?
 
                 // Add clientId to the payload so frontend knows where it came from
-                if(data.payload) data.payload.clientId = clientId;
+                if(data.payload) {
+                    data.payload.clientId = clientId;
+                    data.payload.assignedName = meta.client.assignedName;
+                }
 
                 // Broadcast to eligible frontends
                 for (let [clientWs, clientMeta] of activeConnections.entries()) {
