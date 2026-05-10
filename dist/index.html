@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Remote Management System</title>
-  <script type="module" crossorigin src="/assets/index-DfyqCKSV.js"></script>
+  <script type="module" crossorigin src="/assets/index-DTxtONH2.js"></script>
   <link rel="stylesheet" crossorigin href="/assets/index-CdIZvmhV.css">
 </head>
 
@@ -242,6 +242,9 @@
                                 <button id="screenshot-btn" class="glow-btn"
                                     style="flex: 1; padding: 12px; font-weight: bold; background: linear-gradient(135deg, #2ecc71, #27ae60); color: white; box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4); border: none; border-radius: 8px; cursor: pointer;">📸
                                     Ekran Görüntüsü Al</button>
+                                <button id="live-view-btn" class="glow-btn"
+                                    style="flex: 1; padding: 12px; font-weight: bold; background: linear-gradient(135deg, #3498db, #2980b9); color: white; box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4); border: none; border-radius: 8px; cursor: pointer;">📺
+                                    Canlı İzle (VNC)</button>
                             </div>
                         </div>
                         <div class="control-section">
@@ -281,6 +284,18 @@
             <p style="color: var(--text-secondary); font-size: 0.9rem;">Copy this code and give it to the user.</p>
             <input type="text" id="generated-jwt" readonly style="width: 100%; text-align: center; font-size: 1.2rem; letter-spacing: 2px; margin: 15px 0; background: rgba(255,255,255,0.1);">
             <button id="close-jwt-modal-btn" class="glow-btn">Close</button>
+        </div>
+    </div>
+
+    <!-- Live View Modal Overlay -->
+    <div id="live-view-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; justify-content: center; align-items: center; flex-direction: column;">
+        <div style="display: flex; justify-content: space-between; width: 90%; max-width: 1200px; margin-bottom: 10px;">
+            <h3 style="margin: 0; color: white;">Live Screen Monitor</h3>
+            <button id="close-live-view-btn" class="danger-btn" style="padding: 5px 15px;">Close View</button>
+        </div>
+        <div style="width: 90%; max-width: 1200px; height: 80vh; background: #000; border: 2px solid #333; border-radius: 8px; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative;">
+            <img id="live-screen-img" src="" style="max-width: 100%; max-height: 100%; object-fit: contain; display: none;">
+            <span id="live-screen-loading" style="color: white; font-size: 1.2rem;">Waiting for frames...</span>
         </div>
     </div>
 
