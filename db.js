@@ -1,47 +1,87 @@
-const fs = require('fs');
-const path = require('path');
 const crypto = require('crypto');
+const { Pool } = require('pg');
 
-const DB_FILE = path.join(__dirname, 'db.json');
+let pool = null;
+function getPool() {
+    if (!pool) {
+        pool = new Pool({
+            connectionString: process.env.DATABASE_URL,
+            ssl: { rejectUnauthorized: false }
+        });
+    }
+    return pool;
+}
 
 const DEFAULT_DB = {
     users: [
         {
             id: 'admin',
             username: 'admin',
-            password: '123', // Admin can change this or we can hash later. Kept simple per limits.
+            password: '123',
             role: 'admin',
             createdAt: Date.now()
         }
     ],
-    clients: [], // { id, hardwareId, assignedName, osInfo, firstConnection, lastConnection, ownerId }
-    jwts: [], // { code, clientId, status: 'active'|'used'|'revoked', createdBy, createdAt, usedBy, usedAt }
-    pending_approvals: [] // { id, jwtCode, clientId, userId, requestedAt }
+    clients: [],
+    jwts: [],
+    pending_approvals: []
 };
 
-function initDb() {
-    if (!fs.existsSync(DB_FILE)) {
-        fs.writeFileSync(DB_FILE, JSON.stringify(DEFAULT_DB, null, 4));
+async function initDbAsync() {
+    await getPool().query(`
+        CREATE TABLE IF NOT EXISTS store (
+            key TEXT PRIMARY KEY,
+            value JSONB NOT NULL
+        )
+    `);
+
+    // Seed default data if table is empty
+    const res = await getPool().query(`SELECT key FROM store WHERE key = 'db'`);
+    if (res.rowCount === 0) {
+        await getPool().query(
+            `INSERT INTO store (key, value) VALUES ('db', $1)`,
+            [JSON.stringify(DEFAULT_DB)]
+        );
     }
+}
+
+function initDb() {
+    initDbAsync().catch(err => console.error('DB Init Error:', err));
 }
 
 function readDb() {
-    try {
-        const data = fs.readFileSync(DB_FILE, 'utf8');
-        const parsed = JSON.parse(data);
-        return { ...DEFAULT_DB, ...parsed };
-    } catch (err) {
-        console.error("DB Read Error:", err);
-        return DEFAULT_DB;
+    // Supabase is async but index.js calls readDb() synchronously.
+    // We cache the last known state and refresh it asynchronously.
+    if (!readDb._cache) {
+        readDb._cache = { ...DEFAULT_DB };
+        // Trigger async load immediately
+        getPool().query(`SELECT value FROM store WHERE key = 'db'`)
+            .then(res => {
+                if (res.rowCount > 0) {
+                    readDb._cache = { ...DEFAULT_DB, ...res.rows[0].value };
+                }
+            })
+            .catch(err => console.error('DB Read Error:', err));
     }
+    return readDb._cache;
 }
 
-function writeDb(data) {
-    try {
-        fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 4));
-    } catch (err) {
-        console.error("DB Write Error:", err);
+// Also expose an async version for internal use
+readDb.refresh = async function () {
+    const res = await getPool().query(`SELECT value FROM store WHERE key = 'db'`);
+    if (res.rowCount > 0) {
+        readDb._cache = { ...DEFAULT_DB, ...res.rows[0].value };
     }
+    return readDb._cache;
+};
+
+function writeDb(data) {
+    readDb._cache = data;
+    getPool().query(
+        `INSERT INTO store (key, value) VALUES ('db', $1)
+         ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value`,
+        [JSON.stringify(data)]
+    ).catch(err => console.error('DB Write Error:', err));
 }
 
 function generateId() {
